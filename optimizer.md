@@ -1,5 +1,5 @@
 ###### 梯度下降
-* 给定待优化的模型参数$\theta\in\mathcal{R}^{d}$和目标函数J(\theta)$后，
+* 给定待优化的模型参数$\theta\in\mathcal{R}^{d}$和目标函数$J(\theta)$后，
   算法通过沿梯度$\nabla_{\theta} J(\theta)$的相反方向更新$\theta$来最小化$J(\theta)$。
 * 1.计算目标函数关于参数的梯度：$g_t = \nabla_{\theta} J(\theta)$
 * 2.根据历史梯度计算一阶动量和二阶动量：
