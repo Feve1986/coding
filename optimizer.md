@@ -25,7 +25,6 @@
   因此，可以对一阶和二阶动量做偏置校正 (bias correction):
   $$\hat{m}_t = \frac{m_t}{1 - \beta_1^t},\hat{v}_t = \frac{v_t}{1 - \beta_2^t}$$
 * AdamW：在Adam基础上针对L2正则项进行解耦合操作，添加下图中的绿色项而非粉色项：![image](https://github.com/Feve1986/coding/assets/67903547/2c57c554-089d-4233-a5f2-73fafc1ffe70)
-  此时参数更新公式为：$w_{t+1} = (1 - \alpha_t \lambda)w_t - \alpha_t \cdot \frac{\hat{m}_t}{\sqrt{\hat{v}_t + \epsilon}}
-  其中$\lambda$为权重衰减参数，通常取0.01。
+  此时参数更新公式为：$w_{t+1} = (1 - \alpha_t \lambda)w_t - \alpha_t \cdot \frac{\hat{m}_t}{\sqrt{\hat{v}_t + \epsilon}},$其中$\lambda$为权重衰减参数，通常取0.01。
 
 
