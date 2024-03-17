@@ -15,7 +15,7 @@
   由此产生了加速收敛和减小震荡的效果。
 * AdaGrad：自适应梯度算法。SGD以相同的学习率去更新$\theta$的各个分量，而不同参数的更新频率往往有所区别。
   AdaGrad引入了二阶动量：$$v_t = \text{diag}\left(\sum_{i=1}^{t} g_{i,1}^2, \sum_{i=1}^{t}g_{i,2}^2,\dots, \sum_{i=1}^{t} g_{i,d}^2\right).$$此时可以认为学习率等效于$\frac{\eta}{\sqrt{v_t + \epsilon}}.$
-* AdaDelta/RMSProp：自动调整学习率。在AdaGrad中，随着训练周期的增长，学习率降低的很快。  
+* AdaDelta/RMSProp：自适应学习率。在AdaGrad中，随着训练周期的增长，学习率降低的很快。  
   RMS在计算二阶动量时不累积全部历史梯度，而只关注最近某一时间窗口内的下降梯度。其二阶动量采用指数平均移动公式计算。
 >SGD-M在SGD的基础上考虑了指数移动平均的一阶动量；AdaDelta/RMSProp在SGD的基础上考虑了指数移动平均的二阶动量。
 * Adam是RMSProp和Momentum的结合，保证迭代比较平稳。
