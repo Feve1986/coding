@@ -195,10 +195,10 @@
             min_heapify(arr, n, i)  
 ```
 
-oc的输入输出
+* oc的输入输出
 ```
-T = int(input()) #单个整数输入
-n, a, b = map(int, input().strip().split()) #多个整数输入
-data = list(map(int, input(),strip().split())) #列表内容输入
-a,b=b,a 交换变量
+T = int(input()) 
+n, a, b = map(int, input().strip().split())
+data = list(map(int, input(),strip().split()))
+a,b=b,a 
 ```
