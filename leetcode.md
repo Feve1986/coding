@@ -172,7 +172,7 @@
 
 ###### 基础算法结构
 * 数组的最小堆化：
-  ```
+  ```python
   class Solution:
 
     def min_heapify(arr, n, i):
@@ -193,12 +193,41 @@
         n = len(arr)
         for i in range(n//2 - 1, -1, -1):
             min_heapify(arr, n, i)  
-```
+  ```
 
 * oc的输入输出
-```
-T = int(input()) 
-n, a, b = map(int, input().strip().split())
-data = list(map(int, input(),strip().split()))
-a,b=b,a 
-```
+  ```python
+  T = int(input()) 
+  n, a, b = map(int, input().strip().split())
+  data = list(map(int, input(),strip().split()))
+  a,b=b,a 
+  ```
+
+###### 笔试题
+* 输入为压缩字符串2(a)3(b)4(c),给出最小分割数，使每个字串的值小于等于k，值的计算公式为 字符数*字符种类
+  ```python
+  words = ['a', 'b', 'c']
+  nums = [2, 3, 4]
+  kinds = set()
+  count = 0
+  ans = 0
+  for i, s in enumerate(words):
+    kinds.add(s)
+    v = (count+num)*len(kinds)
+    if v==k:
+      ans+=1
+      kinds = set()
+      count = 0
+    elif v<k: count+=num
+    # v>k, 
+    else:
+        need = k-(len(kinds)*(count+1))
+        need = ceil(need//len(kinds))
+        need = 0 if need <=0 else need
+        res = num-need-1
+        ans += 1
+        ans += res//k
+        count = res%k
+        if count==0: kinds=set() 
+  print(ans)    
+  ```
