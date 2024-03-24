@@ -142,9 +142,16 @@
 ###### 滑动窗口
 * 找到字符串中所有字母异位词：给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
   异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
-  > 用两个数组target和current来记录字符。target[ord(l)-ord('a')]+=1
+  > 双指针，用两个数组target和current来记录字符。target[ord(l)-ord('a')]+=1
 * 无重复字符的最长子串：给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串的长度。
-  > 集合curr，curr.add(s[j]),curr.remove(s[i])
+  > 双指针，集合curr，curr.add(s[j]),curr.remove(s[i])
+
+###### 双指针
+* 接雨水：给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+  > leftmax和rightmax  
+  > if leftmax <= rightmax:  
+      res+= leftmax-height[left]  
+      left+=1
 
 ###### 矩阵
 * 搜索二维矩阵 II：编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：  
