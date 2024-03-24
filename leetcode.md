@@ -22,19 +22,31 @@
   返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
   > dp[i] = max(dp[i-1] + diff, 0)
 * 最大子数组和：给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+  > dp[i] = max(dp[i-1]+nums[i], nums[i])
   
 ###### 多维动态规划：dp = [[0]*(n+1) for _ in range(m+1)]
 * 编辑距离：给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数。
   你可以对一个单词进行如下三种操作：插入一个字符，删除一个字符，替换一个字符
+> if word1[i-1] == word2[j-1]:
+    dp[i][j] = dp[i-1][j-1]
+  else:
+    dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])+1
 * 不同路径：一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
   机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。问总共有多少条不同的路径？
+  > dp = [[1]*m for _ in range(n)], dp[j][i] = dp[j][i-1] + dp[j-1][i]
 * 最小路径和：给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。说明：每次只能向下或者向右移动一步。
+  > dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
 * 最长公共子序列：给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。如果不存在公共子序列 ，返回 0 。
   一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
   例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
-
+  > if text1[i-1]==text2[j-1]:
+      dp[i][j] = dp[i-1][j-1]+1
+  else:
+      dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  
 ###### 链表
 * 两两交换链表中的节点（递归）：给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+  > head1.next = self.swapPairs(head3)
 * K 个一组翻转链表（迭代）：给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
   k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
   你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
@@ -49,14 +61,26 @@
 > cur.next.random = cur.random.next
 * 排序链表：给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。先把链表元素放到数组中进行排序。
 * 合并 K 个升序链表（最小堆）：给你一个链表数组，每个链表都已经按升序排列。请你将所有链表合并到一个升序链表中，返回合并后的链表。
-> ListNode.__lt__ = lambda a, b: a.val < b.val
+> ListNode.__lt__ = lambda a, b: a.val < b.val  
+> 最小堆
 * LRU 缓存（双向链表）：请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
   实现 LRUCache 类：
   LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
   int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
   void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
-  函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
+  > 双向链表  
+  > class DLinkedNode:  
+    def __init__(self, key=0, value=0):  
+        self.key = key  
+        self.value = value  
+        self.prev = None  
+        self.next = None  
+  > self.cache = collections.OrderedDict()  
+  > self.cache.move_to_end(key)  
+  > self.cache.popitem(last=False)  
 * 环形链表 II（快慢指针）：给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+  > ptr = head
+  while ptr != slow:
 
 ###### 二叉树（dfs）
 * 二叉树的层序遍历（递归）：给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
