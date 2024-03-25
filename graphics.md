@@ -99,7 +99,11 @@ KeepAugment：分析出最不重要的区域，选择这个区域进行Cutout，
 LoRA、Adapter、前缀微调
 LoRA添加的位置一般是k和v
 
+###### ROC曲线的绘制
+* TPR，FPR：TPR（recall）的意义是所有真实类别为1的样本中，预测类别为1的比例。FPR的意义是所有真实类别为0的样本中，预测类别为1的比例。
+![image](https://github.com/Feve1986/coding/assets/67903547/61a8aabc-5709-4183-ba5e-b5df722edc30)
+* F1 score： ![image](https://github.com/Feve1986/coding/assets/67903547/c22a416c-e0b1-4625-9d82-9db16754e780)
+* ![image](https://github.com/Feve1986/coding/assets/67903547/9ac19c50-91be-4082-ba28-e0dde49e4cb3)
 
 
-  
 
