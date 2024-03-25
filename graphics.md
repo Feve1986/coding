@@ -27,12 +27,22 @@
 > 对于NLP data来说，batch上去做归一化是没啥意义的，因为不同句子的同一位置的分布大概率是不同的。
 ![image](https://github.com/Feve1986/coding/assets/67903547/f886fc95-8aed-4a3e-840c-fd9ebb8c3794)
 
-def layer_normalization(inputs, gamma, beta, epsilon=1e-5):
-  mean=np.mean(inputs,axis=0)
-  variance=np.var(inputs,axis=0)
-  normalized=(inputs-mean)/np.sqrt(variance+epsilon)
-  output=gamma*normalized+beta
-  return output
+```python
+class LayerNorm(nn.Module):
+  def __init__(self, features, eps=1e-6):
+    super(LayerNorm, self).__init__() #确保父类
+    self.a_2 = nn.Parameter(torch.ones(features))
+    self.b_2 = nn.Parameter(torch.zeros(features))
+    self.eps = eps
+	
+  def forward(self, x):
+  	# 就是在统计每个样本所有维度的值，求均值和方差，所以就是在hidden dim上操作
+  	# 相当于变成[bsz*max_len, hidden_dim], 然后再转回来, 保持是三维
+  	mean = x.mean(-1, keepdim=True) # mean: [bsz, max_len, 1]
+  	std = x.std(-1, keepdim=True) # std: [bsz, max_len, 1]
+          # 注意这里也在最后一个维度发生了广播
+  	return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
+```
 
 ###### 数据增强方式
 * 数据增强的作用
