@@ -107,3 +107,47 @@ LoRA添加的位置一般是k和v。
 
 ###### 卷积层
 * 卷积的参数量为输入维度\*输出维度\*卷积核尺寸
+
+###### kv cache
+* KV cache参数量计算
+  KV cache需要的参数量为：2\*2\*(s+n)\*h\*l*b=4blh(s+n). 其中第一个2表示K/V cache，第二个2表示FP16占两个bytes，l表示层数，h表示隐藏层维度，s和n分别为输入序列和输出序列的长度。  
+kv cache可以分为两个阶段，第一阶段为prompt输入，第二阶段为token by token的内容输出。
+![image](https://github.com/Feve1986/coding/assets/67903547/07aabae3-c089-4c2f-93ed-81aeecce59cd)
+
+随着batch size和长度的增大，kv cache占用的显存开销快速增大，甚至会超过模型本身。
+
+而LLM的窗口长度也在不断增大，因此就出现一组主要矛盾，即：对不断增长的LLM的窗口长度的需要与有限的GPU显存之间的矛盾。因此优化KV cache就显得非常必要。
+
+* KV cache优化的典型方法
+  MQA（Multi Query Attention，多查询注意力）是多头注意力的一种变体。主要区别在于，在MQA中不同的注意力头共享一个K和V的集合，每个头只单独保留了一份查询参数。因此K和V的矩阵仅有一份，这大幅度减少了显存占用，使其更高效。由于MQA改变了注意力机制的结构，因此模型通常需要从训练开始就支持MQA。也可以通过对已经训练好的模型进行微调来添加多查询注意力支持，仅需要5%的原始训练数据量就可以达到不错的效果。
+
+[参考文章](https://grs.zju.edu.cn/cas/login?service=http%3A%2F%2Fgrs.zju.edu.cn%2Fallogene%2Fpage%2Fhome.htm)
+###### 激活函数
+Gelu：xP(X<=x), 其中X为服从标准正态分布的随机变量。
+
+###### BERT
+* 手推BERT的参数量：Embedding+Encoder+Pooling：
+1. Embedding：Embedding(V+512+2)\*d+Norm(2\*d)=(V+516)*d
+2. Encoder：每个Block：Multi-Head Attention(4\*d\*d+4\*d)+Add&Norm(2\*d)+Feed Forward(d\*(4\*d)+4*\d+(4\*d)*d+d)+Add&Norm(2\*d)。=12\*(12\*d**2+13\*d)
+3. Pooling：(d\*d+d)=(d**2+d)
+
+###### CLIP
+* 结合了检索模型和生成模型
+* 预训练：从互联网收集的4亿图像文本对
+
+###### GPT-4的语言能力
+通过Text Encoder来编码句子，通过Image Encoder来编码图像，然后计算文本嵌入和图像嵌入的相似度。
+视频生成的关键：生成的视频的关键帧之间信息不会丢失。首先需要理解图像。
+跨帧之间的信息传输。
+Sora：数据预处理：可变持续时间、分辨率、横纵比。统一的视觉表示，视频压缩网络，时空潜伏斑块，Diffusion Transformer
+
+###### 提示工程
+上下文理解，角色扮演，Coc，CoT思考链
+
+###### 模型联接
+* 内联-MoE：Expert，Route，Gating Model, 常见实现有GPT-4
+* 外联-Agent：Brain（处理和记忆），Perception（多模感知），Action（输出和控制）。常见实现有Langchain
+
+###### Ernie与Bert的不同
+
+###### Agent是什么
