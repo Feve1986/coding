@@ -105,5 +105,5 @@ LoRA添加的位置一般是k和v。
 * F1 score： ![image](https://github.com/Feve1986/coding/assets/67903547/c22a416c-e0b1-4625-9d82-9db16754e780)
 * ![image](https://github.com/Feve1986/coding/assets/67903547/9ac19c50-91be-4082-ba28-e0dde49e4cb3)
 
-
-
+###### 卷积层
+* 卷积的参数量为输入维度\*输出维度\*卷积核尺寸
