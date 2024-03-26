@@ -112,6 +112,7 @@ LoRA添加的位置一般是k和v。
 * KV cache参数量计算
   KV cache需要的参数量为：2\*2\*(s+n)\*h\*l*b=4blh(s+n). 其中第一个2表示K/V cache，第二个2表示FP16占两个bytes，l表示层数，h表示隐藏层维度，s和n分别为输入序列和输出序列的长度。  
 kv cache可以分为两个阶段，第一阶段为prompt输入，第二阶段为token by token的内容输出。
+![image](https://github.com/Feve1986/coding/assets/67903547/be29f6a7-1cbf-4136-84fc-c68c6c2a2d4e)
 ![image](https://github.com/Feve1986/coding/assets/67903547/07aabae3-c089-4c2f-93ed-81aeecce59cd)
 
 随着batch size和长度的增大，kv cache占用的显存开销快速增大，甚至会超过模型本身。
