@@ -121,6 +121,7 @@ kv cache可以分为两个阶段，第一阶段为prompt输入，第二阶段为
 
 * KV cache优化的典型方法
   MQA（Multi Query Attention，多查询注意力）是多头注意力的一种变体。主要区别在于，在MQA中不同的注意力头共享一个K和V的集合，每个头只单独保留了一份查询参数。因此K和V的矩阵仅有一份，这大幅度减少了显存占用，使其更高效。由于MQA改变了注意力机制的结构，因此模型通常需要从训练开始就支持MQA。也可以通过对已经训练好的模型进行微调来添加多查询注意力支持，仅需要5%的原始训练数据量就可以达到不错的效果。
+![image](https://github.com/Feve1986/coding/assets/67903547/0683aa59-33f9-463d-a501-151964db1717)
 
 [参考文章](https://grs.zju.edu.cn/cas/login?service=http%3A%2F%2Fgrs.zju.edu.cn%2Fallogene%2Fpage%2Fhome.htm)
 ###### 激活函数
