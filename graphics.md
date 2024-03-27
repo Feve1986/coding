@@ -44,6 +44,23 @@ class LayerNorm(nn.Module):
   	return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
 ```
 
+```python
+class LlamaRMSNorm(nn.Module):
+    def __init__(self, hidden_size, eps=1e-6):
+        """
+        LlamaRMSNorm is equivalent to T5LayerNorm
+        """
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(hidden_size))
+        self.variance_epsilon = eps
+
+    def forward(self, hidden_states):
+        input_dtype = hidden_states.dtype
+        variance = hidden_states.to(torch.float32).pow(2).mean(-1, keepdim=True)
+        hidden_states = hidden_states * torch.rsqrt(variance + self.variance_epsilon)
+
+        return (self.weight * hidden_states).to(input_dtype)
+```
 ###### 数据增强方式
 * 数据增强的作用
 1. 避免过拟合。当数据集具有某种明显的特征，例如数据集中图片基本在同一个场景中拍摄，使用Cutout方法和风格迁移变化等相关方法可避免模型学到跟目标无关的信息。
@@ -212,8 +229,18 @@ tiling的主要思想是分割输入，将它们从慢速HBM加载到快速SRAM�
    2. 优化LLM以生成能够在奖励模型中获得高分的回答。
 ![image](https://github.com/Feve1986/coding/assets/67903547/3b8de1aa-3e4f-4b62-9c41-73144584f8cd)
 
+PPO(Proximal Policy Optimization): 在这一过程中，提示会从一个分布中随机选择，例如，我们可以在客户提示中进行随机选择。每个提示被依次输入至LLM模型中，得到一个回答，并通过RM给予回答一个相应评分。约束条件：这一阶段得到的模型不应与SFT阶段和原始预训练模型偏离太远（在下面的目标函数中以KL散度项进行数学表示）
+
+幻觉问题：外挂知识，线性探测。
+
+###### 大模型
+Llama，Llama2，ChatGLM，Chatpgt系列，Kimi，Baichuan
+
 ###### Llama
 * tokenization：BPE(Byte Pair Encoding)算法
 
   核心就是根据出现频率不断合并直到减少到词表大小或概率增量低于某一阈值。
-  
+
+###### 反向传播
+* crossentropy反向传播的梯度计算：[手推公式之“交叉熵”梯度](https://zhuanlan.zhihu.com/p/518044910)
+* 
