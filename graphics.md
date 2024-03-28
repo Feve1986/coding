@@ -1,4 +1,4 @@
-###### 图像分割传统方法
+![image](https://github.com/Feve1986/coding/assets/67903547/fea108ac-1435-420f-9008-09861825b81a)###### 图像分割传统方法
 * 基于阈值的图像分割
 * 基于区域的图像分割：区域生长
 * 基于边缘检测的图像分割：Canny算子
@@ -292,11 +292,20 @@ PPO(Proximal Policy Optimization): 在这一过程中，提示会从一个分布
 奖励模型（RM 模型）将 SFT 模型最后一层的 softmax 去掉，即最后一层不用 softmax，改成一个线性层。RM 模型的输入是问题和答案，输出是一个标量即分数。由于模型太大不够稳定，损失值很难收敛且小模型成本较低，因此，RM 模型采用参数量为 6B 的模型，而不使用 175B 的模型。
 
 > 奖励模型的损失函数采用 Pairwise Ranking Loss
-![image](https://github.com/Feve1986/coding/assets/67903547/6e19e1fb-bf38-4489-9872-b6680c24ca94)
+![image](https://github.com/Feve1986/coding/assets/67903547/529a7b7a-330c-4a43-bf0e-d185d6b27a58)
+![image](https://github.com/Feve1986/coding/assets/67903547/6764d0c9-645a-44ef-9f54-ffa5c47b2148)
 
 > PPO 算法确定的奖励函数具体计算如下：将提示 输入初始 LM 和当前微调的 LM，分别得到了输出文本 ，将来自当前策略的文本传递给 RM 得到一个标量的奖励 。将两个模型的生成文本进行比较计算差异的惩罚项，在来自 OpenAI、Anthropic 和 DeepMind 的多篇论文中设计为输出词分布序列之间的 Kullback–Leibler (KL) 散度的缩放，即 。这一项被用于惩罚 RL 策略在每个训练批次中生成大幅偏离初始模型，以确保模型输出合理连贯的文本。如果去掉这一惩罚项可能导致模型在优化中生成乱码文本来愚弄奖励模型提供高奖励值。此外，OpenAI 在 InstructGPT 上实验了在 PPO 添加新的预训练梯度，可以预见到奖励函数的公式会随着 RLHF 研究的进展而继续进化。
 
 > 最后根据 PPO 算法，我们按当前批次数据的奖励指标进行优化 (来自 PPO 算法 on-policy 的特性) 。PPO 算法是一种信赖域优化 (Trust Region Optimization，TRO) 算法，它使用梯度约束确保更新步骤不会破坏学习过程的稳定性。DeepMind 对 Gopher 使用了类似的奖励设置，但是使用 A2C (synchronous advantage actor-critic) 算法来优化梯度。最后根据 PPO 算法，我们按当前批次数据的奖励指标进行优化 (来自 PPO 算法 on-policy 的特性) 。PPO 算法是一种信赖域优化 (Trust Region Optimization，TRO) 算法，它使用梯度约束确保更新步骤不会破坏学习过程的稳定性。DeepMind 对 Gopher 使用了类似的奖励设置，但是使用 A2C (synchronous advantage actor-critic) 算法来优化梯度。
+
+将初始语言模型的微调任务建模为强化学习（RL）问题，需要定义策略（policy）、动作空间（action space）和奖励函数（reward function）等基本要素。策略就是基于该语言模型，接收 prompt 作为输入，然后输出一系列文本（或文本的概率分布）；而动作空间就是词表所有 token 在所有输出位置的排列组合；观察空间则是可能的输入 token 序列（即 prompt），为词表所有 token 在所有输入位置的排列组合；而奖励函数则是上一阶段训好的 RM 模型，配合一些策略层面的约束进行的奖励计算。该阶段流程如下图所示：
+
+RL 模型训练的损失函数公式如下：
+![image](https://github.com/Feve1986/coding/assets/67903547/a5d0af43-1bf6-454b-be53-ae063d39e73f)
+RL 模型的优化目标是使得损失函数越大越好，损失函数可以分为三个部分，打分部分、KL 散度部分以及预训练部分。
+![image](https://github.com/Feve1986/coding/assets/67903547/dbe092f7-4005-4b12-8775-1d806711f741)
+
 
 ###### 大模型
 Llama，Llama2，ChatGLM，Chatpgt系列，Kimi，Baichuan
