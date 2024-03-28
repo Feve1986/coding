@@ -282,6 +282,22 @@ PPO(Proximal Policy Optimization): 在这一过程中，提示会从一个分布
 
 幻觉问题：外挂知识，线性探测。
 
+* RLHF  
+1. RLHF可以分为三个步骤：  
+   1. 预训练一个语言模型 (LM)
+   2. 聚合问答数据并训练一个奖励模型 (Reward Model，RM)
+   3. 用强化学习 (RL) 方式微调 LM。方案是近端策略优化（Proximal Policy Optimization，PPO） 
+
+2. 奖励函数：
+奖励模型（RM 模型）将 SFT 模型最后一层的 softmax 去掉，即最后一层不用 softmax，改成一个线性层。RM 模型的输入是问题和答案，输出是一个标量即分数。由于模型太大不够稳定，损失值很难收敛且小模型成本较低，因此，RM 模型采用参数量为 6B 的模型，而不使用 175B 的模型。
+
+> 奖励模型的损失函数采用 Pairwise Ranking Loss
+![image](https://github.com/Feve1986/coding/assets/67903547/6e19e1fb-bf38-4489-9872-b6680c24ca94)
+
+> PPO 算法确定的奖励函数具体计算如下：将提示 输入初始 LM 和当前微调的 LM，分别得到了输出文本 ，将来自当前策略的文本传递给 RM 得到一个标量的奖励 。将两个模型的生成文本进行比较计算差异的惩罚项，在来自 OpenAI、Anthropic 和 DeepMind 的多篇论文中设计为输出词分布序列之间的 Kullback–Leibler (KL) 散度的缩放，即 。这一项被用于惩罚 RL 策略在每个训练批次中生成大幅偏离初始模型，以确保模型输出合理连贯的文本。如果去掉这一惩罚项可能导致模型在优化中生成乱码文本来愚弄奖励模型提供高奖励值。此外，OpenAI 在 InstructGPT 上实验了在 PPO 添加新的预训练梯度，可以预见到奖励函数的公式会随着 RLHF 研究的进展而继续进化。
+
+> 最后根据 PPO 算法，我们按当前批次数据的奖励指标进行优化 (来自 PPO 算法 on-policy 的特性) 。PPO 算法是一种信赖域优化 (Trust Region Optimization，TRO) 算法，它使用梯度约束确保更新步骤不会破坏学习过程的稳定性。DeepMind 对 Gopher 使用了类似的奖励设置，但是使用 A2C (synchronous advantage actor-critic) 算法来优化梯度。最后根据 PPO 算法，我们按当前批次数据的奖励指标进行优化 (来自 PPO 算法 on-policy 的特性) 。PPO 算法是一种信赖域优化 (Trust Region Optimization，TRO) 算法，它使用梯度约束确保更新步骤不会破坏学习过程的稳定性。DeepMind 对 Gopher 使用了类似的奖励设置，但是使用 A2C (synchronous advantage actor-critic) 算法来优化梯度。
+
 ###### 大模型
 Llama，Llama2，ChatGLM，Chatpgt系列，Kimi，Baichuan
 
