@@ -44,6 +44,7 @@ class LayerNorm(nn.Module):
   	return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
 ```
 
+
 ```python
 class LlamaRMSNorm(nn.Module):
     def __init__(self, hidden_size, eps=1e-6):
@@ -156,7 +157,8 @@ Gelu：xP(X<=x), 其中X为服从标准正态分布的随机变量。
 2. Encoder：每个Block：Multi-Head Attention(4\*d\*d+4\*d)+Add&Norm(2\*d)+Feed Forward(d\*(4\*d)+4*\d+(4\*d)*d+d)+Add&Norm(2\*d)。=12\*(12\*d**2+13\*d)
 3. Pooling：(d\*d+d)=(d**2+d)
 * BERT的训练任务：Masked LM（完形填空）和 Next Sentence Prediction，是下一个句子则为1，不是则为0，做二分类。
-
+* 激活函数为Gelu（一般只在FFN加激活函数）
+  
 ###### CLIP
 * 结合了检索模型和生成模型
 * 预训练：从互联网收集的4亿图像文本对
@@ -203,6 +205,8 @@ FlashAttention的优化思路：1.在不访问整个输入的情况下计算soft
 
 tiling的主要思想是分割输入，将它们从慢速HBM加载到快速SRAM，然后计算这些快的attention输出。
 
+内存高效：传统的注意力机制（例如普通注意力）存在二次内存复杂度 (O(N²))，其中 N 是序列长度。另一方面，Flash Attention 将内存复杂度降低到线性 (O(N))。这种优化是通过有效利用硬件内存层次结构并最大限度地减少不必要的数据传输来实现的。
+
 ###### logistic损失函数（交叉熵）
 
 
@@ -211,6 +215,51 @@ tiling的主要思想是分割输入，将它们从慢速HBM加载到快速SRAM�
   1. 每个注意力头使用不同的线性变换，这意味着它们可以从输入序列的不同子空间中学习不同的特征关联。
   2. 并行运算，提升性能。
 * scale/sqrt(d):不做scale难以收敛，容易出现梯度消失问题。
+
+```python
+import torch.nn as nn
+class Attention(nn.Module):
+    def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0.):
+        super().__init__()
+        self.num_heads = num_heads
+        head_dim = dim // num_heads
+        self.scale = qk_scale or head_dim ** -0.5
+
+        self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
+        self.attn_drop = nn.Dropout(attn_drop)
+        self.proj = nn.Linear(dim, dim)
+        self.proj_drop = nn.Dropout(proj_drop)
+
+
+    def forward(self, x):
+        B, N, C = x.shape
+        qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+        q, k, v = qkv[0], qkv[1], qkv[2]
+
+        attn = (q @ k.transpose(-2, -1)) * self.scale  # B x num_heads x N x N
+
+        attn = attn.softmax(dim=-1)
+        weights = attn
+
+        attn = self.attn_drop(attn)
+        x = (attn @ v).transpose(1, 2).reshape(B, N, C)
+
+        x = self.proj(x)
+        x = self.proj_drop(x)
+
+        return x, weights
+
+if __name__ == '__main__':
+    heads = 2
+    batch_size = 1
+    seq_len=3
+    d_model = 10
+    multiheadattention = Multiheadattention(heads,d_model,dropout)
+    x = torch.randn(batch_size,seq_len,input_dim)
+    print(x)  # batch_size,seq_len,embeding
+    attention = multiheadattention(x)
+    print(attention)   
+```
 
 ###### 模型微调
 
@@ -236,11 +285,98 @@ PPO(Proximal Policy Optimization): 在这一过程中，提示会从一个分布
 ###### 大模型
 Llama，Llama2，ChatGLM，Chatpgt系列，Kimi，Baichuan
 
+* ChatGLM：
+  1. 基于 FlashAttention 技术，将基座模型的上下文长度（Context Length）由 ChatGLM-6B 的 2K 扩展到了 32K
+  2. 基于 Multi-Query Attention 技术，ChatGLM2-6B 有更高效的推理速度和更低的显存占用
+  3. ChatGLM2-6B 使用了 GLM 的混合目标函数
+  4. PostNorm
+
+* Llama2:
+  1. 训练数据Token数量从1.4T->2T
+  2. 序列长度从2K->4K
+  3. 在SFT过程中，LLAMA2强调数据质量的重要性，通过2W的高质量指令数据，激发模型的指令遵循能力。
+  4. 在RLHF过程中，LLAMA2做了较多工作，对RLHF过程作出了进一步的解释。自建了100W的Reward数据集，训练了两个独立的Reword Model。
+  5. PreNorm
+
 ###### Llama
 * tokenization：BPE(Byte Pair Encoding)算法
 
   核心就是根据出现频率不断合并直到减少到词表大小或概率增量低于某一阈值。
 
+*  LlamaMLP 中一共有 3 个 Linear 层
+```python
+class LlamaMLP(nn.Module):
+    def __init__(
+        self,
+        hidden_size: int,
+        intermediate_size: int,
+        hidden_act: str,
+    ):
+        super().__init__()
+        self.gate_proj = nn.Linear(hidden_size, intermediate_size, bias=False)
+        self.down_proj = nn.Linear(intermediate_size, hidden_size, bias=False)
+        self.up_proj = nn.Linear(hidden_size, intermediate_size, bias=False)
+        # config 中 hidden_act = 'silu'
+        # 'silu' 和 'swish' 对应的激活函数均为：SiLUActivation 
+        # https://github.com/huggingface/transformers/blob/717dadc6f36be9f50abc66adfd918f9b0e6e3502/src/transformers/activations.py#L229
+        self.act_fn = ACT2FN[hidden_act]
+
+    def forward(self, x):
+        # 对应上述公式的 SwiGLU
+        return self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+```
+
+* 位置编码：RoPE
+  不同于原始 Transformers 论文中，将 pos embedding 和 token embedding 进行相加，RoPE 是将位置编码和 query （或者 key） 进行相乘。
+* RMS Norm 的全称为 Root Mean Square layer normalization。与 layer Norm 相比，RMS Norm的主要区别在于去掉了减去均值的部分。RMS Norm 的作者认为这种模式在简化了Layer Norm 的计算，可以在减少约 7%∼64% 的计算时间。
+
+* 使用SwiGLU替代了ReLU作为激活函数。FFN层包括两个线性变换，中间插入一个非线性激活函数。最初的Transformer架构采用了ReLU激活函数。
+
+  
 ###### 反向传播
 * crossentropy反向传播的梯度计算：[手推公式之“交叉熵”梯度](https://zhuanlan.zhihu.com/p/518044910)
-* 
+
+###### 怎么解决灾难性遗忘
+灾难性遗忘现象是在连续学习多个任务的过程中，学习新知识的过程会迅速破坏之前获得的信息，而导致模型性能在旧任务中急剧下降。尤其是在微调大语言模型时，微调后导致模型在旧任务中急剧下降。
+造成灾难性遗忘的一个主要原因是，传统模型假设数据分布是固定或平稳的， 训练样本是独立同分布的，所以模型可以一遍又一遍地看到所有任务相同的数据， 但当数据变为连续的数据流时，训练数据的分布就是非平稳的，模型从非平稳的数据分布中持续不断地获取知识时，新知识会干扰旧知识，从而导致模型性能的快速下降。
+
+为了克服灾难性遗忘，持续学习（一直给模型喂数据，一直让模型学）是一种能够缓解深度学习模型灾难性遗忘的机器学习方法，包括正则化方法、记忆回放方法和参数孤立等方法，为了扩展模型的适应能力，让模型能够在不同时刻学习不同任务的知识，即模型学习到的数据分布，持续学习算法必须在保留旧知识与学习新知识之间取得平衡。
+还可以用预训练的权重衰减，学习率衰减、对抗性微调和参数高效微调等方法解决灾难性遗忘。
+
+###### PEFT
+p tuning v2 和 prompt tuning  lora的区别，各自的优缺点 
+
+Prompt tuning：分为hard和soft两种形式，hard是输入prompt是不可导的，soft是将一个可训练张量与输入文本的embeddings拼接起来，这个可训练张量可以通过反向传播来优化
+
+Prefix tuning：与prompt tuning相似，主要区别如下：prefix tuning将prefix参数（可训练张量）添加到所有的transformer层，而prompt tuning只将可训练矩阵添加到输入embedding。具体地，prefix tuning会将prefix张量作为past_key_value添加到所有的transformer层，并用一个独立的FFN来编码和优化prefix参数。
+
+Adapter：把额外的可训练参数添加到每个transformer层。与prefix tuning不同之处是：prefix tuning是把prefix添加到输入embedding；而adapter在两个层之间插入了adapter 层，adapter层由全连接层+激活函数+全连接层组成。
+
+LLAMA-Adapter：只给L个深层transformer层添加了可学习的adapter，且这个adapter是一个self-attention层
+
+LoRA
+
+###### 大模型训练框架
+DeepSpeed, Megatron,Zero
+
+###### 为什么会出现 LLMs 复读机问题？
+数据偏差：大型语言模型通常是通过预训练阶段使用大规模无标签数据进行训练的。如果训练数据中存在大量的重复文本或者某些特定的句子或短语出现频率较高，模型在生成文本时可能会倾向于复制这些常见的模式。
+
+训练目标的限制：大型语言模型的训练通常是基于自监督学习的方法，通过预测下一个词或掩盖词来学习语言模型。这样的训练目标可能使得模型更倾向于生成与输入相似的文本，导致复读机问题的出现。
+
+缺乏多样性的训练数据：虽然大型语言模型可以处理大规模的数据，但如果训练数据中缺乏多样性的语言表达和语境，模型可能无法学习到足够的多样性和创造性，导致复读机问题的出现。
+
+模型结构和参数设置：大型语言模型的结构和参数设置也可能对复读机问题产生影响。例如，模型的注意力机制和生成策略可能导致模型更倾向于复制输入的文本。
+
+为了解决复读机问题，可以采取以下策略：
+多样性训练数据：在训练阶段，尽量使用多样性的语料库来训练模型，避免数据偏差和重复文本的问题。
+
+引入噪声：在生成文本时，可以引入一些随机性或噪声，例如通过采样不同的词或短语，或者引入随机的变换操作，以增加生成文本的多样性。
+
+温度参数调整：温度参数是用来控制生成文本的多样性的一个参数。通过调整温度参数的值，可以控制生成文本的独创性和多样性，从而减少复读机问题的出现。
+
+后处理和过滤：对生成的文本进行后处理和过滤，去除重复的句子或短语，以提高生成文本的质量和多样性。
+
+添加惩罚项对重复进行限制
+
+
