@@ -28,3 +28,8 @@
 
 * BLIP2：要从模态对齐、高效训练两个方向对图文多模态预训练任务（vision-and-language pre-training VLP）做出优化。在模态对齐上提出了一个轻量架构QFormer（querying transformer）来建立图像-文本的桥梁。在高效多模态训练上，结合QFormer提出一种二阶段预训练范式来将目前的视觉backbone与LLM模型链接起来。在VQAv2任务上，仅用了 
  倍Flamingo80B的训练数据，却带来8.7%精度提升。
+
+BLIP2的核心是引入了QFormer(Querying Transformer)模块来将对齐图片特征与文本特征。QFormer内部包含两个transformer子模块，其一为image transoformer，其二是text-transformer。image transformer比text-transformer多了一个cross-attention层，这两个transformer共享Self-Attention参数，如下图所示。
+
+![image](https://github.com/Feve1986/coding/assets/67903547/57d85edd-6cdc-4c97-afeb-fafcc848eb30)
+这里面有一个需要注意的点：作者没有将image encoder得到的image embedding作为image transformer的输入，而是定义了一个可训练的query作为输入。image embedding用作cross attention层的key， value。
