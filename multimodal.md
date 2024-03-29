@@ -50,3 +50,14 @@ ITG（Image-grounded Text Generation）：query tokens只跟query tokens交互�
 与常规ITC任务不同的是：单个图片BLIP2产生的image embedding有32个（等于learned query的数量），而text embedding只有1个。BLIP2的操作是，同时计算32个image embedding与text embedding的距离，仅取最近的计算loss。
 
 ITC和ITM主要是为了适应图片分类、图片检索、VQA等理解类任务。ITG主要是为了适应Captioning等生成类任务。
+
+* InstructBLIP：这篇文章在BLIP-2的基础上，在26个数据集上系统研究vision-language的指令集微调（intruction tuning）。并设计了一种instruction-aware的特征提取方式，使得模型能够根据不同instruction来提取图片中特定的表征，以此提升多模态能力。InstructionBLIP是用指令集对训练好的BLIP-2进一步微调。微调的架构如下：![image](https://github.com/Feve1986/coding/assets/67903547/02c13baa-1079-4e43-84a9-21e8d22c697a)
+
+  ![image](https://github.com/Feve1986/coding/assets/67903547/065a136e-5d84-4fdd-90d1-b264054cb68e)
+
+任务类型
+![image](https://github.com/Feve1986/coding/assets/67903547/bb31bf59-0d21-4a5a-99b7-03abcf64716b)
+
+问题与解答：
+![image](https://github.com/Feve1986/coding/assets/67903547/64103b43-9350-4630-926c-6fd6b365ca11)
+
