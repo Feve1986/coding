@@ -30,6 +30,23 @@
  倍Flamingo80B的训练数据，却带来8.7%精度提升。
 
 BLIP2的核心是引入了QFormer(Querying Transformer)模块来将对齐图片特征与文本特征。QFormer内部包含两个transformer子模块，其一为image transoformer，其二是text-transformer。image transformer比text-transformer多了一个cross-attention层，这两个transformer共享Self-Attention参数，如下图所示。
-
 ![image](https://github.com/Feve1986/coding/assets/67903547/57d85edd-6cdc-4c97-afeb-fafcc848eb30)
 这里面有一个需要注意的点：作者没有将image encoder得到的image embedding作为image transformer的输入，而是定义了一个可训练的query作为输入。image embedding用作cross attention层的key， value。
+
+QFormer的目的是，在冻结的视觉模型和大语言模型间进行视觉-语言对齐。Q-Former是一个轻量级的transformer，它使用一个可学习的query向量集，从冻结的视觉模型提取视觉特征。
+
+采取两阶段预训练策略：
+
+阶段一：vision-language表示学习(representation learning)，迫使Q-Former学习和文本最相关的视觉表示。
+
+阶段二：vision-to-language生成式学习(generative learning)，将Q-Former的输出连接到冻结的大语言模型，迫使Q-Former学习到的视觉表示能够为大语言模型所解释。
+
+ITC（Image-text Contrastive Learning）：图像的transformer会输出queries那么多个embedding；文本transformer 输入cls token和文本tokens，然后[CLS] token的输出embedding和queries对应的embedding计算相似分数，取最高的作为相似度。这里注意，self-attention时，query和文本token是不交互的！
+
+ITM（Image-Text Matching）：self-attention时，query和文本token是互相交互的。对每个qeury 的输出embedidngs接一个二分类的线性分类器，分图文是否匹配，所有query的分类结果取平均作为最终分类结果。
+
+ITG（Image-grounded Text Generation）：query tokens只跟query tokens交互，文本tokens只跟前面的文本tokens和query tokens交互。生成文本的起始标识token用[DEC]token.。
+
+与常规ITC任务不同的是：单个图片BLIP2产生的image embedding有32个（等于learned query的数量），而text embedding只有1个。BLIP2的操作是，同时计算32个image embedding与text embedding的距离，仅取最近的计算loss。
+
+ITC和ITM主要是为了适应图片分类、图片检索、VQA等理解类任务。ITG主要是为了适应Captioning等生成类任务。
