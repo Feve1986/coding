@@ -5,9 +5,21 @@ BLIP: 引导语言图像预训练（如上图所示），以实现统一的视�
 
 （2） 字幕和过滤（CapFilt）：一种新的数据集增强方法，用于从噪声图像-文本对中学习。作者将预先训练的MED分为两个模块: 一个字幕器，用于生成给定web图像的合成字幕，以及一个过滤器，用于从原始web文本和合成文本中删除嘈杂的字幕。
 
-1. ITC：
+1. ITC（Image-Text Contrastive Loss）
    cosine_similarity = np.dot(I_e[n,d_e], T_e.T[n, d_e])*np.exp(t)
    label = np.arange(n)
    loss_i = crossentropy_loss(cosine_similarity[n,n], label, axis=0)  
    loss_t = crossentropy_loss(cosine_similarity[n,n], label, axis=1)
    （label的含义是第i行/列的真实label为i）
+   ![image](https://github.com/Feve1986/coding/assets/67903547/8d7fac67-fc08-447a-bb7c-427906861db3)
+
+2. ITM（Image-text matching）
+   对融合后的特征向量计算交叉熵损失
+   ![image](https://github.com/Feve1986/coding/assets/67903547/a8d47d98-1557-4902-a909-5e0c3d8d2d79)
+
+3. LM(Language modeling loss)
+   LM时GPT系列的预训练任务。简单来说就是根据前面的词来预测下一个词。与NLP的LM有所不同的是VLP同时将image-embedding引入到上下文信息。最大化自回归序列的似然概率进行训练
+![image](https://github.com/Feve1986/coding/assets/67903547/b082dae5-1a14-4972-accc-2d684df260cd)
+![image](https://github.com/Feve1986/coding/assets/67903547/b7809fb4-83dd-434c-b4b8-620ee3644e88)
+
+* boostrapping caption（核心）
