@@ -67,3 +67,8 @@ kimi的优势：
 5. 重复第4步，直到基础词表的大小达到想要的大小。(词表的大小是一个预先定义的超参数)
 ![image](https://github.com/Feve1986/coding/assets/67903547/9384a79b-df58-467f-aff5-b20a9d5047de)
 
+###### 激活函数
+GELU是ReLU的平滑版本。
+
+RELU的优缺点：
+![image](https://github.com/Feve1986/coding/assets/67903547/954028f2-8ddf-48a7-b59a-7661c7f25c1c)
