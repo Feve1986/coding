@@ -5,12 +5,16 @@
 简而言之，self-attention 使同一上下文的每一个token都能够观察到上下文得任意位置的 token（decoder 的 self-attention 是每个token只能观察到上下文任意历史位置的token），这一结构特点使得Transformer 较之CNN、RNN等模型结构理论上显著提升了长距离依赖的捕捉能力，无数实验也证实了这种结构可以提升最终的效果。付出的代价就是，与此同时计算复杂度也增长为平方级。计算时间和计算资源的制约是 n 无法迅速增大的直接因素，也就是在平方级复杂度制约下，模型上下文难以随心所欲地增长。
 ![image](https://github.com/Feve1986/coding/assets/67903547/bfcd1e9a-6385-4f05-8fc4-8bf96c1d5945)
 
-###### 解决方案
-* 1.借助模型外部工具辅助处理长文本或者利用外部记忆存储过长的上下文向量，可以称为外部召回的方案；
-* 2.利用模型优化的一般方法：包括量化（Quantization）、剪枝（Pruning）、蒸馏（Distillation）、参数共享（Weight Sharing）、矩阵分解（Factorization）
-* 3.优化Attention的计算（Efficient Transformers）：
+###### 长上下文的解决方案
+1.借助模型外部工具辅助处理长文本或者利用外部记忆存储过长的上下文向量，可以称为外部召回的方案；
+2.利用模型优化的一般方法：包括量化（Quantization）、剪枝（Pruning）、蒸馏（Distillation）、参数共享（Weight Sharing）、矩阵分解（Factorization）
+3.优化Attention的计算（Efficient Transformers）：
   Transformer-XL(相对位置编码), Sparse Patterns，Low-Rank Transformation，Memory / Downsampling
-  
+4. RopE的位置编码扩展
+5. 
+
+###### 流水线并行
+
 ###### 上下文长度越长越好吗
 * 上下文过长会导致注意力分散。
   
@@ -38,6 +42,11 @@ Gemini 支持高达 1000万 token 的超长上下文和强大的多模态能力�
 
 ###### Claude：先监督微调 后RAIHF
 RAIHF：通过AI排序而非人工排序数据集训练出来的偏好模型PM的指引下迭代模型策略
+
+###### Llama2
+相比于 Llama 1 ，Llama 2 的训练数据多了 40%，上下文长度也翻倍，并采用了分组查询注意力机制。具体来说，Llama 2预训练模型是在2 万亿的 token上训练的，精调 Chat 模型是在100 万人类标记数据上训练的。
+![image](https://github.com/Feve1986/coding/assets/67903547/c51025fa-670b-425a-a2c1-e1ec3f283c69)
+![image](https://github.com/Feve1986/coding/assets/67903547/fe751fe3-3b1d-4c97-9f1d-76b277e9bdcc)
 
 ###### DPO
 RLHF的替代算法：直接偏好优化(Direct Preference Optimization，简称DPO)。DPO通过简单的分类目标直接优化最满足偏好的策略，而没有明确的奖励函数或RL。与RLHF一样，DPO依赖于理论偏好模型，衡量给定的奖励函数与经验偏好数据的一致性。
@@ -86,6 +95,8 @@ GELU是ReLU的平滑版本。
 RELU的优缺点：
 ![image](https://github.com/Feve1986/coding/assets/67903547/954028f2-8ddf-48a7-b59a-7661c7f25c1c)
 
+![image](https://github.com/Feve1986/coding/assets/67903547/51aecfc2-fd5d-44ab-824c-74a0cef3e54e)
+
 ###### jieba分词（中文分词框架）
 ![image](https://github.com/Feve1986/coding/assets/67903547/558e6836-5440-4ecd-8588-dea1bd1418c4)
 
@@ -120,3 +131,6 @@ RAG 已经被证明是一种解决大模型幻觉的有效方法，如何进一�
 开发大模型应用不仅面临算法挑战，还涉及复杂的工程问题。这要求开发者具备深入的算法知识及复杂系统设计和工程实践的能力。采用复杂策略，如查询改写、意图识别和实体检测，不仅提升了准确性，也显著加快了处理速度。即使是先进的 Gemini 1.5 模型，在进行 Google 的 MMLU 基准测试时也需调用 32 次才能达到 90.0% 的准确率，显示出采用复杂工程策略以提升性能的必要性。通过使用向量数据库和 RAG，采取空间换时间的策略，使 RAG 系统能更有效利用大型语言模型（LLM）的能力。这不仅限于生成答案，还包括分类、提取结构化数据、处理复杂 PDF 文档等任务，增强了 RAG 系统的多功能性，使其能适应更广泛的应用场景。
 ![image](https://github.com/Feve1986/coding/assets/67903547/34cc63ef-3ad4-4463-b7ce-0a48d7afc7f3)
 [RAG 修炼手册｜RAG 敲响丧钟？大模型长上下文是否意味着向量检索不再重要](https://segmentfault.com/a/1190000044755011)
+
+###### Agent
+* 什么是Agent: Model+Planning+Memory+Tools. 有工具，有记忆，能规划。
