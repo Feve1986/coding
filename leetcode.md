@@ -354,3 +354,23 @@ for i in range(10000):
 
 * 圆周上任意取三点，组成锐角三角形的概率
   ![image](https://github.com/Feve1986/coding/assets/67903547/203da0b7-0871-429d-b2dc-17cb8d3c71d8)
+
+
+* 快速排序
+```python
+def quick_sort(l,i,j):
+  if i>=j: return l
+  pivot=l[i]
+  low=i
+  high=j
+  while i<j:
+    while i<j and l[j]>=pivot:
+      j-=1
+    l[i]=l[j]
+    while i<j and l[i]<=pivot:
+      i+=1
+    l[j]=l[i]
+  l[i]=pivot
+  quick_sort(l,low,i-1)
+  quick_sort(l,i+1,high)
+```
