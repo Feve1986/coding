@@ -61,3 +61,5 @@ ITC和ITM主要是为了适应图片分类、图片检索、VQA等理解类任�
 问题与解答：
 ![image](https://github.com/Feve1986/coding/assets/67903547/64103b43-9350-4630-926c-6fd6b365ca11)
 
+###### 增大对比学习的batch
+all_gather，[PyTorch多卡分布式训练 | all_gather | 大batch对比学习](https://zhuanlan.zhihu.com/p/615784842)
