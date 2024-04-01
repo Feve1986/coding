@@ -132,6 +132,29 @@ RELU的优缺点：
 
  [DPO: Direct Preference Optimization 论文解读及代码实践] (https://zhuanlan.zhihu.com/p/642569664)
 
+###### KV Cache
+* KV cache参数量计算
+  KV cache需要的参数量为：2\*2\*(s+n)\*h\*l*b=4blh(s+n). 其中第一个2表示K/V cache，第二个2表示FP16占两个bytes，l表示层数，h表示隐藏层维度，s和n分别为输入序列和输出序列的长度。  
+kv cache可以分为两个阶段，第一阶段为prompt输入，第二阶段为token by token的内容输出。
+![image](https://github.com/Feve1986/coding/assets/67903547/be29f6a7-1cbf-4136-84fc-c68c6c2a2d4e)
+![image](https://github.com/Feve1986/coding/assets/67903547/07aabae3-c089-4c2f-93ed-81aeecce59cd)
+
+随着batch size和长度的增大，kv cache占用的显存开销快速增大，甚至会超过模型本身。
+
+而LLM的窗口长度也在不断增大，因此就出现一组主要矛盾，即：对不断增长的LLM的窗口长度的需要与有限的GPU显存之间的矛盾。因此优化KV cache就显得非常必要。
+
+* KV cache优化的典型方法
+1. MQA（Multi Query Attention，多查询注意力）是多头注意力的一种变体。主要区别在于，在MQA中不同的注意力头共享一个K和V的集合，每个头只单独保留了一份查询参数。因此K和V的矩阵仅有一份，这大幅度减少了显存占用，使其更高效。由于MQA改变了注意力机制的结构，因此模型通常需要从训练开始就支持MQA。也可以通过对已经训练好的模型进行微调来添加多查询注意力支持，仅需要5%的原始训练数据量就可以达到不错的效果。
+![image](https://github.com/Feve1986/coding/assets/67903547/0683aa59-33f9-463d-a501-151964db1717)
+2. 窗口优化：KV cache的作用是计算注意力，当推理时的文本长度T大于训练时的最大长度L时，一个自然的想法就是滑动窗口。
+3. 量化与稀疏
+4. 存储与计算优化
+5. 
+
+[参考文章](https://grs.zju.edu.cn/cas/login?service=http%3A%2F%2Fgrs.zju.edu.cn%2Fallogene%2Fpage%2Fhome.htm)
+[对 Transformer 显存占用的理论分析](https://zhuanlan.zhihu.com/p/462443052)
+[分析transformer模型的参数量、计算量、中间激活、KV cache](https://zhuanlan.zhihu.com/p/624740065)
+
 ###### RAG
 RAG 已经被证明是一种解决大模型幻觉的有效方法，如何进一步提升 RAG 的实战效果？
 
