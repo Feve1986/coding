@@ -56,6 +56,21 @@ RAIHF：通过AI排序而非人工排序数据集训练出来的偏好模型PM�
 ![image](https://github.com/Feve1986/coding/assets/67903547/c51025fa-670b-425a-a2c1-e1ec3f283c69)
 ![image](https://github.com/Feve1986/coding/assets/67903547/fe751fe3-3b1d-4c97-9f1d-76b277e9bdcc)
 
+1. 训练数据Token数量从1.4T->2T
+2. 序列长度从2K->4K
+3. 在SFT过程中，LLAMA2强调数据质量的重要性，通过2W的高质量指令数据，激发模型的指令遵循能力。
+4. 在RLHF过程中，LLAMA2做了较多工作，对RLHF过程作出了进一步的解释。自建了100W的Reward数据集，训练了两个独立的Reword Model。
+5. PreNorm
+
+###### ChatGLM：
+1. 基于 FlashAttention 技术，将基座模型的上下文长度（Context Length）由 ChatGLM-6B 的 2K 扩展到了 32K
+2. 基于 Multi-Query Attention 技术，ChatGLM2-6B 有更高效的推理速度和更低的显存占用
+3. ChatGLM2-6B 使用了 GLM 的混合目标函数
+4. PostNorm
+
+
+
+
 ###### DPO
 RLHF的替代算法：直接偏好优化(Direct Preference Optimization，简称DPO)。DPO通过简单的分类目标直接优化最满足偏好的策略，而没有明确的奖励函数或RL。与RLHF一样，DPO依赖于理论偏好模型，衡量给定的奖励函数与经验偏好数据的一致性。
 
