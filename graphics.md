@@ -302,23 +302,6 @@ RL 模型训练的损失函数公式如下：
 RL 模型的优化目标是使得损失函数越大越好，损失函数可以分为三个部分，打分部分、KL 散度部分以及预训练部分。
 ![image](https://github.com/Feve1986/coding/assets/67903547/dbe092f7-4005-4b12-8775-1d806711f741)
 
-
-###### 大模型
-Llama，Llama2，ChatGLM，Chatpgt系列，Kimi，Baichuan
-
-* ChatGLM：
-  1. 基于 FlashAttention 技术，将基座模型的上下文长度（Context Length）由 ChatGLM-6B 的 2K 扩展到了 32K
-  2. 基于 Multi-Query Attention 技术，ChatGLM2-6B 有更高效的推理速度和更低的显存占用
-  3. ChatGLM2-6B 使用了 GLM 的混合目标函数
-  4. PostNorm
-
-* Llama2:
-  1. 训练数据Token数量从1.4T->2T
-  2. 序列长度从2K->4K
-  3. 在SFT过程中，LLAMA2强调数据质量的重要性，通过2W的高质量指令数据，激发模型的指令遵循能力。
-  4. 在RLHF过程中，LLAMA2做了较多工作，对RLHF过程作出了进一步的解释。自建了100W的Reward数据集，训练了两个独立的Reword Model。
-  5. PreNorm
-
 ###### Llama
 * tokenization：BPE(Byte Pair Encoding)算法
 
