@@ -106,13 +106,6 @@ KeepAugment：分析出最不重要的区域，选择这个区域进行Cutout，
 
 生成网络：基于GAN来实现风格迁移
 
-###### Loss
-* focalloss：![image](https://github.com/Feve1986/coding/assets/67903547/09cb67a6-3680-4acc-b642-2066273d443c)
-
-  相当于增加了分类不准确样本在损失函数中的权重。
-
-  focal loss相当于增加了难分样本在损失函数的权重，使得损失函数倾向于难分的样本，有助于提高难分样本的准确度。focal loss与交叉熵的对比，
-
 ###### 微调方案
 LoRA、Adapter、前缀微调
 LoRA添加的位置一般是k和v。
@@ -154,14 +147,17 @@ Gelu：xP(X<=x), 其中X为服从标准正态分布的随机变量。
 ###### BERT
 * 手推BERT的参数量：Embedding+Encoder+Pooling：
 1. Embedding：Embedding(V+512+2)\*d+Norm(2\*d)=(V+516)*d
-2. Encoder：每个Block：Multi-Head Attention(4\*d\*d+4\*d)+Add&Norm(2\*d)+Feed Forward(d\*(4\*d)+4*\d+(4\*d)*d+d)+Add&Norm(2\*d)。=12\*(12\*d**2+13\*d)
+2. Encoder：每个Block：Multi-Head Attention(4\*d\*d+4\*d)+Add&Norm(2\*d)+Feed Forward(d\*(4\*d)+4*\d+(4\*d)*d+d)+Add&Norm(2\*d)=12\*(12\*d**2+13\*d)
 3. Pooling：(d\*d+d)=(d**2+d)
 * BERT的训练任务：Masked LM（完形填空）和 Next Sentence Prediction，是下一个句子则为1，不是则为0，做二分类。
 * 激活函数为Gelu（一般只在FFN加激活函数）
-  
+  ![image](https://github.com/Feve1986/coding/assets/67903547/7b8049c5-fd59-4899-8825-6dab5cb769c2)
+
 ###### CLIP
 * 结合了检索模型和生成模型
 * 预训练：从互联网收集的4亿图像文本对
+![image](https://github.com/Feve1986/coding/assets/67903547/b6fb4012-788a-44f1-919e-ced877b40028)
+
 
 ###### GPT-4的语言能力
 通过Text Encoder来编码句子，通过Image Encoder来编码图像，然后计算文本嵌入和图像嵌入的相似度。
