@@ -427,7 +427,7 @@ LLAMA-Adapter：只给L个深层transformer层添加了可学习的adapter，且
 LoRA：LoRA添加的位置一般是q和v。
 
 ###### 大模型训练框架
-DeepSpeed, Megatron,Zero
+DeepSpeed, Megatron,Zero，流水线并行，张量并行。
 
 ###### 为什么会出现 LLMs 复读机问题？
 数据偏差：大型语言模型通常是通过预训练阶段使用大规模无标签数据进行训练的。如果训练数据中存在大量的重复文本或者某些特定的句子或短语出现频率较高，模型在生成文本时可能会倾向于复制这些常见的模式。
