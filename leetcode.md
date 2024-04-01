@@ -343,7 +343,7 @@
   print(ans)    
   ```
 
-* 在圆内随机生成点 : 圆内等概率随机采样
+* 在圆内随机生成点 : 圆内等概率随机采样. 逆变换定理
 ```python
 for i in range(10000):
     u1 = random.uniform(0, 1)
@@ -351,3 +351,6 @@ for i in range(10000):
     a.append(np.sqrt(u1) * math.cos(np.pi * 2 * u2))
     b.append(np.sqrt(u1) * math.sin(np.pi * 2 * u2))
 ```
+
+* 圆周上任意取三点，组成锐角三角形的概率
+  ![image](https://github.com/Feve1986/coding/assets/67903547/203da0b7-0871-429d-b2dc-17cb8d3c71d8)
