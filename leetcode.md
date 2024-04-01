@@ -342,3 +342,12 @@
         if count==0: kinds=set() 
   print(ans)    
   ```
+
+* 在圆内随机生成点 : 圆内等概率随机采样
+```python
+for i in range(10000):
+    u1 = random.uniform(0, 1)
+    u2 = random.uniform(0, 1)
+    a.append(np.sqrt(u1) * math.cos(np.pi * 2 * u2))
+    b.append(np.sqrt(u1) * math.sin(np.pi * 2 * u2))
+```
