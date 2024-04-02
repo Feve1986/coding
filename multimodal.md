@@ -100,3 +100,12 @@ loss = (loss_i + loss_t)/2
 ![image](https://github.com/Feve1986/coding/assets/67903547/540c421d-50e4-4927-b2ba-0c8a712e8071)
 ![image](https://github.com/Feve1986/coding/assets/67903547/f855f131-2c23-4ada-823d-816bfa354f84)
 
+###### QKV
+们知道K和Q的点乘是为了得到一个attention score 矩阵，用来对V进行提纯。K和Q使用了不同的W_k, W_Q来计算，可以理解为是在不同空间上的投影。正因为有了这种不同空间的投影，增加了表达能力，这样计算得到的attention score矩阵的泛化能力更高。
+
+###### 词表过大怎么办
+![image](https://github.com/Feve1986/coding/assets/67903547/07f654ea-8652-4d11-8cca-5821f6c158c1)
+1.表示层分解（Factorized embedding parameterization）
+2.跨层参数共享（Cross-layer parameter sharing）
+
+CLIP预训练的时候，batch size达到了32768，他用到了哪些trick去提高batch size？
