@@ -103,9 +103,31 @@ loss = (loss_i + loss_t)/2
 ###### QKV
 们知道K和Q的点乘是为了得到一个attention score 矩阵，用来对V进行提纯。K和Q使用了不同的W_k, W_Q来计算，可以理解为是在不同空间上的投影。正因为有了这种不同空间的投影，增加了表达能力，这样计算得到的attention score矩阵的泛化能力更高。
 
-###### 词表过大怎么办
-![image](https://github.com/Feve1986/coding/assets/67903547/07f654ea-8652-4d11-8cca-5821f6c158c1)
-1.表示层分解（Factorized embedding parameterization）
-2.跨层参数共享（Cross-layer parameter sharing）
+###### 面试题集锦
+* 词表很大的优化措施：  
+   ![image](https://github.com/Feve1986/coding/assets/67903547/07f654ea-8652-4d11-8cca-5821f6c158c1)
+   1.表示层分解（Factorized embedding parameterization）
+   2.跨层参数共享（Cross-layer parameter sharing）
 
-CLIP预训练的时候，batch size达到了32768，他用到了哪些trick去提高batch size？
+* CLIP预训练的时候，batch size达到了32768，他用到了哪些trick去提高batch size？  
+  1. 混合精度
+  2. gradient checkpoint，时间换空间。只需要存储部分的中间变量，代价是增加了反向传播的计算时间。  
+     from torch.utils.checkpoint import checkpoint
+  3. 限制每个batch里面的文本最大长度
+     原理：利用文本长度分布的长尾特性。比如：你的文本里面99%的文本长度在512个token以内，有一些比较长的文本长度到了2048，但是我们有必要把文本最大长度设置到2048吗？其实很没有必要，512足矣~
+
+使用方法：先统计一下文本长度的分布，根据你的任务和机器资源，设置每个batch_size的最大长度满足99%或者98%（看你的任务），就可以
+   4. DDP，从其他卡的batch中取负样本
+   ```python
+   with torch.no_grad():
+    all_x = [torch.zeros_like(x) for _ in range(world_size)]
+    torch.distributed.all_gather(all_x, x)
+all_x[rank] = x
+   ```
+
+* cv和nlp的经典的对比学习
+   1.SimCLR(图像)  
+     ![image](https://github.com/Feve1986/coding/assets/67903547/53db6eab-801e-46e3-a944-92d9ae304b33)  
+     Loss为InfoNCE Loss，也就是batch内的正样本和负样本计算相似度后做crossentropyloss。
+   2.BERT-CT(nlp)，和SimCLR思想基本一致
+   3.SimCSE
