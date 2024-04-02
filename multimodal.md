@@ -94,3 +94,9 @@ loss_i = cross_entropy_loss(logits, labels, axis=0)
 loss_t = cross_entropy_loss(logits, labels, axis=1)
 loss = (loss_i + loss_t)/2
 ```
+
+###### AUC
+![image](https://github.com/Feve1986/coding/assets/67903547/3f2a5f85-83e0-487b-84b8-6c7a6fc505b5)
+![image](https://github.com/Feve1986/coding/assets/67903547/540c421d-50e4-4927-b2ba-0c8a712e8071)
+![image](https://github.com/Feve1986/coding/assets/67903547/f855f131-2c23-4ada-823d-816bfa354f84)
+
