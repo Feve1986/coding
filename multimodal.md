@@ -131,3 +131,5 @@ all_x[rank] = x
      Loss为InfoNCE Loss，也就是batch内的正样本和负样本计算相似度后做crossentropyloss。
    2.BERT-CT(nlp)，和SimCLR思想基本一致  
    3.SimCSE
+
+![image](https://github.com/Feve1986/coding/assets/67903547/1f957ade-7661-4548-b880-54d8f694ff5c)
