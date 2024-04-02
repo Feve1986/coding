@@ -13,8 +13,6 @@
 4. RopE的位置编码扩展
 5. 
 
-###### 流水线并行
-
 ###### 上下文长度越长越好吗
 * 上下文过长会导致注意力分散。
   
@@ -69,9 +67,6 @@ RAIHF：通过AI排序而非人工排序数据集训练出来的偏好模型PM�
 2. 基于 Multi-Query Attention 技术，ChatGLM2-6B 有更高效的推理速度和更低的显存占用
 3. ChatGLM2-6B 使用了 GLM 的混合目标函数
 4. PostNorm
-
-
-
 
 ###### DPO
 RLHF的替代算法：直接偏好优化(Direct Preference Optimization，简称DPO)。DPO通过简单的分类目标直接优化最满足偏好的策略，而没有明确的奖励函数或RL。与RLHF一样，DPO依赖于理论偏好模型，衡量给定的奖励函数与经验偏好数据的一致性。
@@ -151,7 +146,6 @@ kv cache可以分为两个阶段，第一阶段为prompt输入，第二阶段为
 2. 窗口优化：KV cache的作用是计算注意力，当推理时的文本长度T大于训练时的最大长度L时，一个自然的想法就是滑动窗口。
 3. 量化与稀疏
 4. 存储与计算优化
-5. 
 
 [参考文章](https://grs.zju.edu.cn/cas/login?service=http%3A%2F%2Fgrs.zju.edu.cn%2Fallogene%2Fpage%2Fhome.htm)
 [对 Transformer 显存占用的理论分析](https://zhuanlan.zhihu.com/p/462443052)
@@ -279,6 +273,12 @@ if __name__ == '__main__':
     attention = multiheadattention(x)
     print(attention)   
 ```
+
+###### 大模型加速
+KV cache、Flash Attention、Paged Attention（操作系统虚拟内存的分页思想）、模型并行（流水行并行和张量并行）
+
+###### 大模型显存优化
+混合精度、MQA、GQA、RMSNorm、LoRA参数高效微调
 
 ###### 知识图谱
 ![image](https://github.com/Feve1986/coding/assets/67903547/c753e19e-133e-4878-82e5-cb4fe5637945)
@@ -448,3 +448,5 @@ DeepSpeed, Megatron,Zero，流水线并行，张量并行。
 后处理和过滤：对生成的文本进行后处理和过滤，去除重复的句子或短语，以提高生成文本的质量和多样性。
 
 添加惩罚项对重复进行限制
+
+> 解决复读问题
