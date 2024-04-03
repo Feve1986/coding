@@ -179,10 +179,17 @@
 
 ###### 双指针
 * 接雨水：给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
-  > leftmax和rightmax  
-  > if leftmax <= rightmax:  
-      res+= leftmax-height[left]  
-      left+=1
+  ```python
+  while i<j:
+    if height[i]<height[j]:
+        leftmax=max(leftmax,height[i])
+        res+=leftmax-height[i]
+        i+=1
+    else:
+        rightmax=max(rightmax,height[j])
+        res+=rightmax-height[j]
+        j-=1
+  ```
 * 三数之和：给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
   ```python
   for i in range(n):
