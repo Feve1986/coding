@@ -175,7 +175,14 @@
   异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
   > 双指针，用两个数组target和current来记录字符。target[ord(l)-ord('a')]+=1
 * 无重复字符的最长子串：给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串的长度。
-  > 双指针，集合curr，curr.add(s[j]),curr.remove(s[i])
+  > 双指针
+  ```python
+  for i in range(n):
+    while j<n and s[j] not in curr:
+        curr.add(s[j])
+    res=max(res, j-i)
+    curr.remove(s[i])
+  ```
 
 ###### 双指针
 * 接雨水：给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
