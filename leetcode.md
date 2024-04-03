@@ -183,6 +183,12 @@
   > if leftmax <= rightmax:  
       res+= leftmax-height[left]  
       left+=1
+* 三数之和：给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
+  ```python
+  for i in range(n):
+    l,r = i+1,n-1
+    if i and nums[i]==nums[i-1]: continue
+  ```
 
 ###### 矩阵
 * 搜索二维矩阵 II：编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：  
