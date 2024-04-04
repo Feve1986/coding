@@ -24,7 +24,7 @@
 
 * boostrapping caption（核心）
 ![image](https://github.com/Feve1986/coding/assets/67903547/4d8fa460-d0ce-4594-ab04-8a159ad4d217)
-就是先用人工标注数据预训练好image-grounded text encoder和image-grounded text decoder，然后对来自网络的大量图像文本对进行筛选，筛选的方法是先用decoder生成图像的伪文本标签，然后对encoder判断图像文本对与图像伪文本对是否是相似的，如果相似则同时保留两者，否则同时抛弃两者。
+就是先用人工标注数据预训练好image-grounded text encoder和image-grounded text decoder，然后对来自网络的大量图像文本对进行筛选，筛选的方法是先用decoder生成图像的伪文本标签，然后对encoder判断图像文本对与图像伪文本对是否是相似的，保留图文匹配的图文对，删除不匹配的图文对。
 
 * BLIP2：要从模态对齐、高效训练两个方向对图文多模态预训练任务（vision-and-language pre-training VLP）做出优化。在模态对齐上提出了一个轻量架构QFormer（querying transformer）来建立图像-文本的桥梁。在高效多模态训练上，结合QFormer提出一种二阶段预训练范式来将目前的视觉backbone与LLM模型链接起来。在VQAv2任务上，仅用了 
  倍Flamingo80B的训练数据，却带来8.7%精度提升。
