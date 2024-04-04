@@ -37,9 +37,9 @@ QFormer的目的是，在冻结的视觉模型和大语言模型间进行视觉-
 
 采取两阶段预训练策略：
 
-阶段一：vision-language表示学习(representation learning)，迫使Q-Former学习和文本最相关的视觉表示。
+阶段一：vision-language表示学习(representation learning)，迫使Q-Former学习和文本最相关的视觉表示。更新的结构是Q-Former。
 
-阶段二：vision-to-language生成式学习(generative learning)，将Q-Former的输出连接到冻结的大语言模型，迫使Q-Former学习到的视觉表示能够为大语言模型所解释。
+阶段二：vision-to-language生成式学习(generative learning)，将Q-Former的输出连接到冻结的大语言模型，迫使Q-Former学习到的视觉表示能够为大语言模型所解释。更新的结构是Q-Former和全连接层。
 
 ITC（Image-text Contrastive Learning）：图像的transformer会输出queries那么多个embedding；文本transformer 输入cls token和文本tokens，然后[CLS] token的输出embedding和queries对应的embedding计算相似分数，取最高的作为相似度。这里注意，self-attention时，query和文本token是不交互的！
 
