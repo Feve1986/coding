@@ -109,7 +109,7 @@ loss = (loss_i + loss_t)/2
    1.表示层分解（Factorized embedding parameterization）
    2.跨层参数共享（Cross-layer parameter sharing）
 
-* CLIP预训练的时候，batch size达到了32768，他用到了哪些trick去提高batch size？  
+* CLIP预训练的时候，batch size达到了32768，他用到了哪些trick去提高batch size？ 
   1. 混合精度
   2. gradient checkpoint，时间换空间。只需要存储部分的中间变量，代价是增加了反向传播的计算时间。  
      from torch.utils.checkpoint import checkpoint
@@ -117,13 +117,20 @@ loss = (loss_i + loss_t)/2
      原理：利用文本长度分布的长尾特性。比如：你的文本里面99%的文本长度在512个token以内，有一些比较长的文本长度到了2048，但是我们有必要把文本最大长度设置到2048吗？其实很没有必要，512足矣~
 
 使用方法：先统计一下文本长度的分布，根据你的任务和机器资源，设置每个batch_size的最大长度满足99%或者98%（看你的任务），就可以
-   4. DDP，从其他卡的batch中取负样本
-   ```python
-   with torch.no_grad():
-    all_x = [torch.zeros_like(x) for _ in range(world_size)]
-    torch.distributed.all_gather(all_x, x)
-all_x[rank] = x
-   ```
+   4. 增大负样本，这里又有几种方案：
+      1. all_gather
+      ```python
+      with torch.no_grad():
+       all_x = [torch.zeros_like(x) for _ in range(world_size)]
+       torch.distributed.all_gather(all_x, x)
+   all_x[rank] = x
+      ```
+      ![image](https://github.com/Feve1986/coding/assets/67903547/5ca9a396-fcfb-4908-8dfc-8f920969137f)  
+      存在的问题：如果采用的是异步BN，也就是BN层的两个统计参数和两个可学习参数是不同的，那么all_gather后不同GPU上的样本互为负样本，由于不同GPU的样本统计特征不同，使得模型可以根据统计特征中区分出这些为负样本。  
+      解决方案：在simCLR[4]中，作者提出的方案是采用所谓的Global BN，其方法就是同样gather不同GPU上的统计参数，然后计算出一个新的统计参数后分发到所有GPU上，此时所有GPU的统计参数都是相同，也就谈不上泄露了。当然你还可以用更简单的方法，比如在[5]中，作者采用Layer Norm取代了Batch Norm。从Fig 4.中可以看出，Layer Norm进行统计参数计算的维度是[Feature, Channel]，而不涉及Batch维度，统计参数不会跨Batch使得统计参数不会泄露样本之间的信息。  
+      2. MoCo：维护一个大尺度的负样本队列，并用动量更新的方式去一致更新Query-Key编码器。
+      3. Memory Bank
+
 
 * cv和nlp的经典的对比学习
    1.SimCLR(图像)  
