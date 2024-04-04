@@ -173,7 +173,18 @@
 ###### 滑动窗口
 * 找到字符串中所有字母异位词：给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
   异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
-  > 双指针，用两个数组target和current来记录字符。target[ord(l)-ord('a')]+=1
+  ```python
+  for i in range(m):
+      curr[ord(p[i])-ord('a')]+=1
+      curr[ord(s[i])-ord('a')]-=1
+  res=[]
+  if curr==[0]*26: res.append(0)
+  for i in range(n-m):
+      curr[ord(s[i])-ord('a')]+=1
+      curr[ord(s[i+m])-ord('a')]-=1 
+      if curr==[0]*26: res.append(i+1)
+  return res
+  ```
 * 无重复字符的最长子串：给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串的长度。
   > 双指针
   ```python
