@@ -159,13 +159,6 @@
 * 最小覆盖子串：给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。  
   注意：对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t 中该字符数量。如果 s 中存在这样的子串，我们保证它是唯一的答案。
   > 用needMap和needSum来追踪实时的字符变化，用双指针来检索。
-* 滑动窗口最大值：给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
-  返回 滑动窗口中的最大值 。
-  > 两种做法：一种是用最大堆来排序q = [(-nums[i], i) for i in range(k)], heapq.heapify(q);
-  > 另一种是用队列存储：  
-  > if queue[0]==nums[i-k]: queue.popleft()  
-    while queue and queue[-1]<nums[i]:  
-      queue.pop()
 * 和为 K 的子数组：给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 。  
   子数组是数组中元素的连续非空序列。
   > 前缀和
@@ -194,6 +187,21 @@
     res=max(res, j-i)
     curr.remove(s[i])
   ```
+* 滑动窗口最大值：给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+  返回 滑动窗口中的最大值 。
+  > 两种做法：一种是用最大堆来排序q = [(-nums[i], i) for i in range(k)], heapq.heapify(q);
+  > 另一种是用队列存储：  
+  ```python
+  res.append(queue[0])
+  for i in range(k, n):
+      if queue[0]==nums[i-k]: queue.popleft()
+      while queue and queue[-1]<nums[i]:
+          queue.pop()
+      queue.append(nums[i])
+      res.append(queue[0])
+  return res
+  ```
+
 
 ###### 双指针
 * 接雨水：给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
