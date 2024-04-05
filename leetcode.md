@@ -176,7 +176,8 @@
   > 左右乘
 * 缺失的第一个正数：给你一个未排序的整数数组 nums ，请你找出其中没有出现的最小的正整数。  
   请你实现时间复杂度为 O(n) 并且只使用常数级别额外空间的解决方案。
-  > 最小的正整数一定<=len(nums)+1, 只需要将<=len(nums)的数对应位置数变为负数即可。
+  > 最小的正整数一定<=len(nums)+1, 只需要将<=len(nums)的数对应位置数变为负数即可。  
+  > 如果不要求常数级别的额外空间只需要循环即可。
 
 ###### 子串
 * 和为 K 的子数组：给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 。  
@@ -270,6 +271,26 @@
 * 矩阵置零：给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
 * 螺旋矩阵：给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
   > 两个判定条件：while left<=right and top<=bottom: if left<right and top<bottom:
+  ```python
+  def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+      l,r,u,d=0,len(matrix[0])-1,0,len(matrix)-1
+      res=[]
+      while l<=r and u<=d:
+          for i in range(l,r+1):
+              res.append(matrix[u][i])
+          for j in range(u+1,d+1):
+              res.append(matrix[j][r])
+          if l<r and u<d:
+              for i in range(r-1,l-1,-1):
+                  res.append(matrix[d][i])
+              for j in range(d-1,u,-1):
+                  res.append(matrix[j][l])
+          l+=1
+          r-=1
+          u+=1
+          d-=1
+      return res
+  ```
 * 旋转图像：给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
   你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
   > 转置+水平翻转
