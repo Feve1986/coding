@@ -179,6 +179,22 @@
 
       return dfs(root.left, root.right)
   ```
+* 将有序数组转换为二叉搜索树：给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 
+平衡二叉搜索树。
+  ```python 
+  def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+      def dfs(nums):
+          if not nums: return None
+          l,r=0,len(nums)
+          if l==r: return TreeNode(nums[l])
+          mid=(l+r)//2
+          root=TreeNode(nums[mid])
+          root.left=dfs(nums[l:mid])
+          root.right=dfs(nums[mid+1:r])
+          return root
+
+      return dfs(nums)
+  ```
 
 ###### 递归
 * 完全平方数（任何正整数都可以由最多四个数的完全平方数表示）：给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
