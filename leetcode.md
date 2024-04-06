@@ -107,6 +107,25 @@
 
 ###### 二叉树（dfs）
 * 二叉树的层序遍历（递归）：给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+  ```python
+  def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+      if not root: return []
+      queue=collections.deque()
+      queue.append(root)
+      res=[]
+      while queue:
+          n=len(queue)
+          h=[]
+          for _ in range(n):
+              node=queue.popleft()
+              h.append(node.val)
+              if node.left:
+                  queue.append(node.left)
+              if node.right:
+                  queue.append(node.right)
+          res.append(h)
+      return res
+  ```
 * 验证二叉搜索树（递归）：给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。有效 二叉搜索树定义如下：
   节点的左子树只包含 小于 当前节点的数。节点的右子树只包含 大于 当前节点的数。所有左子树和右子树自身必须也是二叉搜索树。
 * 二叉搜索树中第K小的元素（递归）：给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）。
@@ -114,7 +133,38 @@
 * 二叉树的最近公共祖先（递归）：给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
 * 路径总和 III：给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
   路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+  ```python
+  def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+      if not root or root==q or root==p: return root
+      left=self.lowestCommonAncestor(root.left, p, q)
+      right=self.lowestCommonAncestor(root.right, p, q)
+      if left and right: return root
+      if left: return left
+      if right: return right
+  ```
   > 前缀和
+* 二叉树展开为链表：给你二叉树的根结点 root ，请你将它展开为一个单链表：
+  展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+  展开后的单链表应该与二叉树 先序遍历 顺序相同。
+  ```python
+  def flatten(self, root: Optional[TreeNode]) -> None:
+      """
+      Do not return anything, modify root in-place instead.
+      """
+      def dfs(root):
+          if not root: return 
+          dfs(root.left)
+          dfs(root.right)
+          l=root.left
+          if l:
+              end=l
+              while end.right:
+                  end=end.right
+              end.right=root.right
+              root.right=l
+              root.left=None
+      dfs(root)
+  ```
 
 ###### 递归
 * 完全平方数（任何正整数都可以由最多四个数的完全平方数表示）：给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
