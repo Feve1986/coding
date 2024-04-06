@@ -63,8 +63,27 @@
 > cur.next.random = cur.random.next
 * 排序链表：给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。先把链表元素放到数组中进行排序。
 * 合并 K 个升序链表（最小堆）：给你一个链表数组，每个链表都已经按升序排列。请你将所有链表合并到一个升序链表中，返回合并后的链表。
-> ListNode.__lt__ = lambda a, b: a.val < b.val  
-> 最小堆
+  > 可以通过增加比较规则使得ListNode能够heapify：ListNode.__lt__ = lambda a, b: a.val < b.val。也可以用下面的方式重构为元组的形式。  
+  ```python
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        
+        dummy=curr=ListNode(0)
+        heap=[]
+        for idx, head in enumerate(lists):
+            if head:
+                heappush(heap, (head.val, idx))
+                lists[idx]=lists[idx].next
+
+        while heap:
+            val,idx=heappop(heap)
+            curr.next=ListNode(val)
+            curr=curr.next
+            if lists[idx]:
+                heappush(heap, (lists[idx].val, idx))
+                lists[idx]=lists[idx].next
+        
+        return dummy.next
+  ```
 * LRU 缓存（双向链表）：请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
   实现 LRUCache 类：
   LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
