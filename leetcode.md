@@ -609,9 +609,9 @@ def quick_sort(l,i,j):
 ```
 
 ```python
+# 定义定义f[i][j][k]为从前i个旧账号中选择，且粉丝量为j，使用了k次多次推广（注意题目说了最多只能使用一个旧账号做多次推广）的最小选择的旧账号数量
 n, x = map(int, input().split())
 w = [0] + list(map(int, input().split()))
-# 定义定义f[i][j][k]为从前i个旧账号中选择，且粉丝量为j，使用了k次多次推广（注意题目说了最多只能使用一个旧账号做多次推广）的最小选择的旧账号数量
 f=[[float("inf")*2 for _ in range(x+1)] for _ in range(n+1)]
 f[0][0][0]=0
 for i in range(1, n+1):
@@ -627,4 +627,44 @@ if res==float("inf"): return -1
 else: return res
 ```
 
+* 塔子哥每次查看他的题解数据，发现都会有一篇题解的赞数+1，并且之后赞数增加的，必是另一篇题解。塔子哥想知道，当某一篇题解赞数最多时，所有题解赞数和的最小值是多少？
 
+输入：
+```
+3
+3 1 4
+```
+
+输出
+```
+9
+15
+8
+```
+
+```python
+n=int(input())
+a=list(map(int, input().split()))
+sum_a=sum(a)
+maxa=max(a)
+def check(a_i, x):
+  return a_i-x<=(n-1)*x-(sum_a-a_i)+1
+
+if n==2:
+  for i in range(n):
+    if a[i]==maxa:
+      print(sum_a)
+    else:
+      print(-1)
+else:
+  for i in range(n):
+    l,r=a[i],int(1e12)
+    while l<=r:
+      mid=(l+r)//2
+      if check(a[i], mid):
+        r=mid-1
+      else:
+        l=mid+1
+    res=sum_a+l-a[i]+max(l-a[i]-1, 0)
+    print(res)
+```
