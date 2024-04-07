@@ -586,3 +586,45 @@ def quick_sort(l,i,j):
   quick_sort(l,low,i-1)
   quick_sort(l,i+1,high)
 ```
+
+* 小红书笔试题：塔子哥有n个账号，每个账号粉丝数为。
+
+这天他又创建了一个新账号，他希望新账号的粉丝数恰好等于
+。为此他可以向自己已有账号的粉丝们推荐自己的新账号，这样以来新账号就得到了之前粉丝的关注。
+
+他想知道，他最少需要在几个旧账号发“推荐新账号”的文章，可以使得他的新账号粉丝数恰好为
+，除此以外，他可以最多从中选择一个账号多次发“推荐新账号”的文章。
+
+假设一个旧账号粉丝数为ai，如果仅推荐一次，那么新账号粉丝数增加[ai/2]，如果多以推荐，则粉丝数增加ai。
+
+输入
+```
+5 8
+1 2 3 4 10
+```
+
+输出
+```
+2
+```
+
+```python
+n, x = map(int, input().split())
+w = [0] + list(map(int, input().split()))
+# 定义定义f[i][j][k]为从前i个旧账号中选择，且粉丝量为j，使用了k次多次推广（注意题目说了最多只能使用一个旧账号做多次推广）的最小选择的旧账号数量
+f=[[float("inf")*2 for _ in range(x+1)] for _ in range(n+1)]
+f[0][0][0]=0
+for i in range(1, n+1):
+  for j in range(x+1):
+    for k in range(2):
+      f[i][j][k]=min(f[i][j][k], f[i-1][j][k])
+      if j>=w[i]//2:
+        f[i][j][k]=min(f[i][j][k], f[i][j-w[i]//2][k]+1)
+      if j>=w[i] and k>0:
+        f[i][j][k]=min(f[i][j][k], f[i][j-w[i]][k-1]+1)
+res=min(f[-1][-1][0], f[-1][-1][1])
+if res==float("inf"): return -1
+else: return res
+```
+
+
