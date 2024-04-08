@@ -142,3 +142,7 @@ loss = (loss_i + loss_t)/2
 * 夸克健康助手：用户可以在部分搜索结果中，看到由夸克健康助手回答的 AIGC 内容。与传统搜索结果相比，提供了更加全面和准确的健康信息。融合医学知识图谱和生成式对话能力。夸克健康助手也有独立的功能页面，支持用户针对健康问题进行多轮提问和对话
 
 ![image](https://github.com/Feve1986/coding/assets/67903547/1f957ade-7661-4548-b880-54d8f694ff5c)
+
+
+* LLaVA
+  ![image](https://github.com/Feve1986/coding/assets/67903547/a68fbcf1-7ca6-4f05-bd4c-28136a9f5b8d)
