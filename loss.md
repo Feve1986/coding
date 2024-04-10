@@ -17,6 +17,14 @@
 > 因此损失函数其实是在衡量两个分布之间的差异。
 
 ###### MSE损失函数：
+* ![image](https://github.com/Feve1986/coding/assets/67903547/8521be24-5cb7-4c19-80fe-2148929532d4)
+不使用MSE损失的原因：
+1. MSE 的损失小于交叉熵的损失，导致对分类错误的点的惩罚不够：
+![image](https://github.com/Feve1986/coding/assets/67903547/9d822ee6-2919-4a61-afc8-a290d76440f3)
+2. MSE 的梯度消失效应较大：
+![image](https://github.com/Feve1986/coding/assets/67903547/ad1297ba-0998-477d-b318-de0ff5fd2810)
+3. 损失函数的凸性（使用MSE可能会陷入局部最优）
+![image](https://github.com/Feve1986/coding/assets/67903547/a6f813ea-45fb-454d-8170-011a45bebe76)
 
 > 随机投硬币
 > sigmoid：![image](https://github.com/Feve1986/coding/assets/67903547/da7a029e-64a4-4386-8d3d-45b622b84845)
