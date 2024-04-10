@@ -2,7 +2,7 @@
 * 信息量I=-log(p)  
 * 熵：所有信息量的期望。熵的公式：  
 ![image](https://github.com/Feve1986/coding/assets/67903547/490beaa0-f2d3-4f39-9b56-eed2ac75eef6)
-* 交叉熵又称KL散度，其公式为：
+* 交叉熵又称KL散度，最小化交叉熵等价于最小化KL散度。其公式为：
 ![image](https://github.com/Feve1986/coding/assets/67903547/d6dd5e00-7f78-43b3-9ef4-98a3f79c45a4)
 * 下面是一个多类别的交叉熵损失计算例子：
 ![image](https://github.com/Feve1986/coding/assets/67903547/25df6009-074a-4eeb-af9d-441142bef277)
@@ -15,6 +15,10 @@
 ![image](https://github.com/Feve1986/coding/assets/67903547/64c65453-87d0-41e1-b9dd-d363a28c37c0)
 * KL散度公式经过变形后有如下形式：![image](https://github.com/Feve1986/coding/assets/67903547/c0f8631d-b741-4e5e-b4f8-887cbb768e3c)
 > 因此损失函数其实是在衡量两个分布之间的差异。
+
+* 和最大似然函数是等价的：
+![image](https://github.com/Feve1986/coding/assets/67903547/80bc4a72-2b8a-4a41-beca-5ecffba45d93)
+
 
 ###### MSE损失函数：
 * ![image](https://github.com/Feve1986/coding/assets/67903547/8521be24-5cb7-4c19-80fe-2148929532d4)
