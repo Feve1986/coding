@@ -145,4 +145,15 @@ loss = (loss_i + loss_t)/2
 
 
 * LLaVA
+  对于输入图像 X_v，本文使用预训练的 CLIP 视觉编码器 ViT-L/14 进行处理，得到视觉特征 Z_v=g (X_v)。实验中使用的是最后一个 Transformer 层之前和之后的网格特征。本文使用一个简单的线性层来将图像特征连接到单词嵌入空间中。具体而言，应用可训练投影矩阵 W 将 Z_v 转换为语言嵌入标记 H_q，H_q 具有与语言模型中的单词嵌入空间相同的维度：
   ![image](https://github.com/Feve1986/coding/assets/67903547/a68fbcf1-7ca6-4f05-bd4c-28136a9f5b8d)
+
+* 多模态大模型
+![image](https://github.com/Feve1986/coding/assets/67903547/e4ac4a0e-1dc7-4d36-8dc2-2069e34a2aaf)
+
+* 输入投影
+输入投影主要用于将编码器编码得到的特征向量对齐到大模型擅长的文本模态空间 之中。具体而言：
+其中， 一般指输入的 Prompt，为了训练输入投影，其目标是给定多模态数据集{,}，最小化其文本生成 Loss:
+通常，输入投影可以直接使用多层感知器 MLP，或者也可以使用更加复杂的如 Crossattention、Q-Former、PFormer 等。
+
+* ![image](https://github.com/Feve1986/coding/assets/67903547/d3807364-ed86-410e-82c2-a357d7ea7527)
