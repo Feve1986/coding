@@ -1,3 +1,4 @@
+[gitee面试问题汇总](https://gitee.com/km601/llms_interview_notes_gitee_gitee#https://gitee.com/link?target=https%3A%2F%2Farticles.zsxq.com%2Fid_vc9u9pmoman6.html)
 ###### 怎么解决模型的输出结尾出现重复字符的问题：
 > 模型的训练数据一般是正向问题，尽量不要出现否定的语句。
 
